@@ -35,6 +35,9 @@ proguard/
 # Android Studio captures folder
 captures/
 
+# Android lib files
+android/libs/
+
 # IntelliJ
 *.iml
 .idea/workspace.xml

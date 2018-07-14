@@ -2,35 +2,94 @@ package com.vodden.music.yeata;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.vodden.music.yeata.tuner.Tuner;
+
+import javax.sound.sampled.LineUnavailableException;
 
 public class Application extends ApplicationAdapter {
-	SpriteBatch batch;
-	BitmapFont font;
+    private Skin skin;
+    private Stage stage;
+    private BitmapFont font, bigFont;
+    private Label label;
+
+	Tuner tuner;
 
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		font = new BitmapFont();
-		font.setColor(Color.RED);
-	}
+        AssetManager manager = new AssetManager();
+        FileHandleResolver resolver = new InternalFileHandleResolver();
+
+        manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+        manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+        manager.setLoader(Skin.class,".json",new SkinLoader(resolver));
+
+        manager.load("realbook-webfont.ttf", FreeTypeFontGenerator.class);
+
+        manager.finishLoading();
+
+        stage = new Stage(new ScreenViewport());
+
+        FreeTypeFontGenerator fontGenerator = (FreeTypeFontGenerator) manager.get("realbook-webfont.ttf");
+        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+        parameter.size = 48;
+        parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "\u0023\u044C";
+        font = fontGenerator.generateFont(parameter);
+        fontGenerator.dispose();
+
+        skin.add("real-book", font, BitmapFont.class);
+
+        LabelStyle labelStyle = new LabelStyle(font,Color.WHITE);
+
+        label = new Label("No note",labelStyle);
+        label.setSize(200, 50);
+        label.setPosition(stage.getWidth()/2 - 50,stage.getHeight()/2);
+
+        stage.addActor(label);
+
+        Gdx.input.setInputProcessor(stage);
+
+        tuner = new Tuner();
+        try {
+            tuner.initTuner();
+        } catch (LineUnavailableException lue) {
+            System.exit(-1);
+        }
+    }
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        try {
+            label.setText(tuner.getNote().toString());
+        } catch (NullPointerException npe) {
+            label.setText("No note");
+        }
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+	}
 
-		batch.begin();
-		font.draw(batch, "Hello World", 200, 200);
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		font.dispose();
-	}
 }
