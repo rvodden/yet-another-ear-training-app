@@ -25,8 +25,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.vodden.music.yeata.tuner.PitchDetectionHandle;
 import com.vodden.music.yeata.tuner.Tuner;
+import org.jfugue.player.Player;
 
+import javax.inject.Inject;
 import javax.sound.sampled.LineUnavailableException;
 
 public class Application extends ApplicationAdapter {
@@ -35,7 +38,16 @@ public class Application extends ApplicationAdapter {
     private BitmapFont font, bigFont;
     private Label label;
 
-	Tuner tuner;
+    Tuner tuner;
+    PitchDetectionHandle pitchDetectionHandle;
+
+	Player player;
+
+    @Inject
+    public Application(Tuner tuner, PitchDetectionHandle pitchDetectionHandle) {
+        this.tuner = tuner;
+        this.pitchDetectionHandle = pitchDetectionHandle;
+    }
 
 	@Override
 	public void create () {
@@ -52,14 +64,12 @@ public class Application extends ApplicationAdapter {
 
         stage = new Stage(new ScreenViewport());
 
-        FreeTypeFontGenerator fontGenerator = (FreeTypeFontGenerator) manager.get("realbook-webfont.ttf");
+        FreeTypeFontGenerator fontGenerator = manager.get("realbook-webfont.ttf");
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = 48;
         parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "\u0023\u044C";
         font = fontGenerator.generateFont(parameter);
         fontGenerator.dispose();
-
-        skin.add("real-book", font, BitmapFont.class);
 
         LabelStyle labelStyle = new LabelStyle(font,Color.WHITE);
 
@@ -71,7 +81,9 @@ public class Application extends ApplicationAdapter {
 
         Gdx.input.setInputProcessor(stage);
 
-        tuner = new Tuner();
+        //player = new Player();
+        //player.play("C E G C");
+
         try {
             tuner.initTuner();
         } catch (LineUnavailableException lue) {
@@ -84,7 +96,7 @@ public class Application extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         try {
-            label.setText(tuner.getNote().toString());
+            label.setText(pitchDetectionHandle.getNote().toString());
         } catch (NullPointerException npe) {
             label.setText("No note");
         }

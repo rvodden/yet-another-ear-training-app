@@ -19,6 +19,9 @@ public class Note {
     public Note (Integer pitch) {
         this.shift = Shift.Natural;
         switch (pitch) {
+            case -1:
+                this.value = Value.Silent;
+                break;
             case 0:
                 this.value = Value.A;
                 break;
@@ -66,6 +69,9 @@ public class Note {
     }
 
     public String toString() {
+        if (value == Value.Silent) {
+            return "Silent";
+        }
         return value.toString() + shift.toString();
     }
 
