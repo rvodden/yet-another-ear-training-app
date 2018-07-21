@@ -43,6 +43,12 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url 'https://jitpack.io' }
     }
+
+    checkstyle {
+        toolVersion "8.11"
+        configFile rootProject.file('checkstyle.xml')
+    }
+
 }
 
 project(":core") {
@@ -73,6 +79,8 @@ project(":desktop") {
     apply plugin: "java"
 
     dependencies {
+        compileOnly 'com.puppycrawl.tools:checkstyle:8.11'
+
         implementation project(":core")
         implementation "com.google.dagger:dagger:$daggerVersion"
         annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
@@ -145,6 +153,9 @@ project(":ios") {
     }
 }
 
-tasks.eclipse.doLast {
-    delete ".project"
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
 }
