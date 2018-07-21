@@ -9,31 +9,31 @@ import javax.inject.Singleton;
 @Singleton
 public class PitchDetectionHandleImpl implements PitchDetectionHandle {
 
-    private volatile Note note;
-    private volatile Double discrepancy;
+  private volatile Note note;
+  private volatile Double discrepancy;
 
-    @Inject
-    public PitchDetectionHandleImpl() {
+  @Inject
+  public PitchDetectionHandleImpl() {
 
-    }
+  }
 
-    @Override
-    public void setDiscrepancy(Double discrepancy) {
-        this.discrepancy = discrepancy;
-    }
+  @Override
+  public Double getDiscrepancy() {
+    return discrepancy;
+  }
 
-    @Override
-    public Double getDiscrepancy() {
-        return discrepancy;
-    }
+  @Override
+  public void setDiscrepancy(Double discrepancy) {
+    this.discrepancy = discrepancy;
+  }
 
-    @Override
-    public void setNote(Note note) {
-        this.note = note;
-    }
+  @Override
+  public Note getNote() {
+    return note;
+  }
 
-    @Override
-    public Note getNote() {
-        return note;
-    }
+  @Override
+  public void setNote(Note note) {
+    this.note = note;
+  }
 }

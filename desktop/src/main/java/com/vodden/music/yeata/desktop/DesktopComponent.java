@@ -8,5 +8,5 @@ import javax.inject.Singleton;
 @Singleton
 @Component(modules = {DesktopModule.class, CoreModule.class})
 interface DesktopComponent {
-    void inject(DesktopLauncher desktopLauncher);
+  void inject(DesktopLauncher desktopLauncher);
 }

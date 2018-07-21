@@ -3,11 +3,11 @@ package com.vodden.music.yeata.tuner;
 import com.vodden.music.yeata.tuner.note.Note;
 
 public interface PitchDetectionHandle {
-    void setDiscrepancy(Double discrepancy);
+  Double getDiscrepancy();
 
-    Double getDiscrepancy();
+  void setDiscrepancy(Double discrepancy);
 
-    void setNote(Note note);
+  Note getNote();
 
-    Note getNote();
+  void setNote(Note note);
 }

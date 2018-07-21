@@ -1,7 +1,8 @@
 apply plugin: "java"
+apply plugin: "idea"
 
 sourceCompatibility = 1.7
-sourceSets.main.java.srcDirs = [ "src/main/java" ]
+sourceSets.main.java.srcDirs = ["src/main/java"]
 
 project.ext.mainClassName = "com.vodden.music.yeata.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/src/main/assets")
@@ -26,9 +27,9 @@ task debug(dependsOn: classes, type: JavaExec) {
 task dist(type: Jar) {
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
+    from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir)
- 
+
     manifest {
         attributes 'Main-Class': project.mainClassName
     }

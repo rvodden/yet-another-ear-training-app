@@ -32,6 +32,7 @@ allprojects {
         aiVersion = '1.8.0'
         tarsosDSPVersion = '2.4'
         jfugueVersion = '5.0.9'
+        androidVersion = '27.1.1'
         daggerVersion = '2.16'
     }
 
@@ -111,9 +112,13 @@ project(":android") {
     dependencies {
         implementation project(":core")
 
+        implementation "com.android.support:support-core-utils:${androidVersion}"
+        implementation "com.android.support:animated-vector-drawable:${androidVersion}"
+        implementation "com.android.support:appcompat-v7:${androidVersion}"
+
         implementation "com.google.dagger:dagger-android:$daggerVersion"
 
-        implementation "com.android.support:support-core-utils:27.1.1"
+
         implementation "com.google.dagger:dagger-android-support:$daggerVersion"
         annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
         annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
@@ -149,7 +154,7 @@ project(":ios") {
         implementation "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
-        
+
     }
 }
 

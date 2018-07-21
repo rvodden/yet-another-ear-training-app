@@ -8,18 +8,18 @@ import javax.inject.Inject;
 
 public class Tuner {
 
-    private final AudioDispatcher audioDispatcher;
-    private final AudioProcessor audioProcessor;
+  private final AudioDispatcher audioDispatcher;
+  private final AudioProcessor audioProcessor;
 
-    @Inject
-    public Tuner(AudioDispatcher audioDispatcher, AudioProcessor audioProcessor) {
-        this.audioDispatcher = audioDispatcher;
-        this.audioProcessor = audioProcessor;
-    }
+  @Inject
+  public Tuner(AudioDispatcher audioDispatcher, AudioProcessor audioProcessor) {
+    this.audioDispatcher = audioDispatcher;
+    this.audioProcessor = audioProcessor;
+  }
 
-    public void initTuner() {
-        Gdx.app.log("yeata", "Starting tuner.");
-        audioDispatcher.addAudioProcessor(audioProcessor);
-        new Thread(audioDispatcher, "Audio Dispatcher").start();
-    }
+  public void initTuner() {
+    Gdx.app.log("yeata", "Starting tuner.");
+    audioDispatcher.addAudioProcessor(audioProcessor);
+    new Thread(audioDispatcher, "Audio Dispatcher").start();
+  }
 }

@@ -25,70 +25,68 @@ import org.jfugue.player.Player;
 import javax.inject.Inject;
 
 public class Application extends ApplicationAdapter {
-    private Stage stage;
-    private Label label;
+  private final Tuner tuner;
+  private final PitchDetectionHandle pitchDetectionHandle;
+  Player player;
+  private Stage stage;
+  private Label label;
 
-    private final Tuner tuner;
-    private final PitchDetectionHandle pitchDetectionHandle;
+  @Inject
+  public Application(Tuner tuner, PitchDetectionHandle pitchDetectionHandle) {
+    this.tuner = tuner;
+    this.pitchDetectionHandle = pitchDetectionHandle;
+  }
 
-	Player player;
+  @Override
+  public void create() {
+    AssetManager manager = new AssetManager();
+    FileHandleResolver resolver = new InternalFileHandleResolver();
 
-    @Inject
-    public Application(Tuner tuner, PitchDetectionHandle pitchDetectionHandle) {
-        this.tuner = tuner;
-        this.pitchDetectionHandle = pitchDetectionHandle;
+    manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+    manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+    manager.setLoader(Skin.class, ".json", new SkinLoader(resolver));
+
+    manager.load("realbook-webfont.ttf", FreeTypeFontGenerator.class);
+
+    manager.finishLoading();
+
+    stage = new Stage(new ScreenViewport());
+
+    FreeTypeFontGenerator fontGenerator = manager.get("realbook-webfont.ttf");
+    FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+    parameter.size = 48;
+    parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "\u0023\u044C";
+    BitmapFont font = fontGenerator.generateFont(parameter);
+    fontGenerator.dispose();
+
+    LabelStyle labelStyle = new LabelStyle(font, Color.WHITE);
+
+    label = new Label("No note", labelStyle);
+    label.setSize(200, 50);
+    label.setPosition(stage.getWidth() / 2 - 50, stage.getHeight() / 2);
+
+    stage.addActor(label);
+
+    Gdx.input.setInputProcessor(stage);
+
+    //player = new Player();
+    //player.play("C E G C");
+
+    tuner.initTuner();
+
+  }
+
+  @Override
+  public void render() {
+    Gdx.gl.glClearColor(0, 0, 0, 1);
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    try {
+      label.setText(pitchDetectionHandle.getNote().toString());
+    } catch (NullPointerException npe) {
+      label.setText("No note");
     }
-
-	@Override
-	public void create () {
-        AssetManager manager = new AssetManager();
-        FileHandleResolver resolver = new InternalFileHandleResolver();
-
-        manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-        manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
-        manager.setLoader(Skin.class,".json",new SkinLoader(resolver));
-
-        manager.load("realbook-webfont.ttf", FreeTypeFontGenerator.class);
-
-        manager.finishLoading();
-
-        stage = new Stage(new ScreenViewport());
-
-        FreeTypeFontGenerator fontGenerator = manager.get("realbook-webfont.ttf");
-        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.size = 48;
-        parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "\u0023\u044C";
-        BitmapFont font = fontGenerator.generateFont(parameter);
-        fontGenerator.dispose();
-
-        LabelStyle labelStyle = new LabelStyle(font,Color.WHITE);
-
-        label = new Label("No note",labelStyle);
-        label.setSize(200, 50);
-        label.setPosition(stage.getWidth()/2 - 50,stage.getHeight()/2);
-
-        stage.addActor(label);
-
-        Gdx.input.setInputProcessor(stage);
-
-        //player = new Player();
-        //player.play("C E G C");
-
-        tuner.initTuner();
-
-    }
-
-	@Override
-	public void render () {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        try {
-            label.setText(pitchDetectionHandle.getNote().toString());
-        } catch (NullPointerException npe) {
-            label.setText("No note");
-        }
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-	}
+    stage.act(Gdx.graphics.getDeltaTime());
+    stage.draw();
+  }
 
 }

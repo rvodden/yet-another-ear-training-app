@@ -8,23 +8,23 @@ import javax.inject.Inject;
 
 class DesktopLauncher {
 
-    @Inject
-    Application application;
+  @Inject
+  Application application;
 
-    @Inject
-    DesktopLauncher() {
-        super();
-        DesktopComponent desktopComponent = DaggerDesktopComponent.builder().desktopModule(new DesktopModule()).build();
-        desktopComponent.inject(this);
-    }
+  @Inject
+  DesktopLauncher() {
+    super();
+    DesktopComponent desktopComponent = DaggerDesktopComponent.builder().desktopModule(new DesktopModule()).build();
+    desktopComponent.inject(this);
+  }
 
-	public static void main (String[] arg) {
-        DesktopLauncher desktopLauncher = new DesktopLauncher();
-        desktopLauncher.launch();
-	}
+  public static void main(String[] arg) {
+    DesktopLauncher desktopLauncher = new DesktopLauncher();
+    desktopLauncher.launch();
+  }
 
-	private void launch() {
-        new LwjglApplication(this.application, new LwjglApplicationConfiguration());
-    }
+  private void launch() {
+    new LwjglApplication(this.application, new LwjglApplicationConfiguration());
+  }
 
 }
