@@ -1,3 +1,5 @@
+apply plugin: "com.dorongold.task-tree"
+
 buildscript {
 
     repositories {
@@ -13,14 +15,15 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.1.3'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.3'
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.17"
+        classpath "gradle.plugin.com.dorongold.plugins:task-tree:1.3"
     }
 }
 
 allprojects {
     apply plugin: 'eclipse'
     apply plugin: 'net.ltgt.apt'
-    apply plugin: 'idea'
     apply plugin: 'checkstyle'
+    apply plugin: 'pmd'
 
     version = '1.0'
     ext {
@@ -80,8 +83,6 @@ project(":desktop") {
     apply plugin: "java"
 
     dependencies {
-        compileOnly 'com.puppycrawl.tools:checkstyle:8.11'
-
         implementation project(":core")
         implementation "com.google.dagger:dagger:$daggerVersion"
         annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
@@ -159,8 +160,21 @@ project(":ios") {
 }
 
 tasks.withType(Checkstyle) {
+    description 'Check code standard'
+    group 'verification'
     reports {
         xml.enabled true
         html.enabled false
+    }
+}
+
+task pmd(type: Pmd) {
+    description 'Identifying potential problems mainly dead code, duplicated code, cyclomatic complexity and overcomplicated expressions'
+    group 'verification'
+    ruleSetFiles = files("${project.rootDir}/rules-pmd.xml")
+
+    reports {
+        xml.enabled = true
+        html.enabled = false
     }
 }

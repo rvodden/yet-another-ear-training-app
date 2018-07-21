@@ -22,7 +22,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "core/build.gradle" }}-{{ checksum  "android/build.gradle" }}-{{ checksum  "desktop/build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew check test --continue --no-daemon --console=plain
+          command: ./gradlew android:lint desktop:check test --continue --no-daemon --console=plain
       - store_artifacts:
           path: build/reports
           destination: reports
