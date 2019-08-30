@@ -1,10 +1,18 @@
 apply plugin: "java"
-apply plugin: "idea"
 
-sourceCompatibility = 1.7
-sourceSets.main.java.srcDirs = ["src/main/java"]
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-project.ext.mainClassName = "com.vodden.music.yeata.desktop.DesktopLauncher"
+sourceSets {
+    main {
+        java {
+            srcDirs += "src/main/java"
+            srcDirs += "build/generated/"
+        }
+    }
+}
+
+project.ext.mainClassName = "com.vodden.music.yaeta.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/src/main/assets")
 
 task run(dependsOn: classes, type: JavaExec) {

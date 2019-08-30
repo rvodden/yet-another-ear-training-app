@@ -20,7 +20,6 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: 'eclipse'
     apply plugin: 'net.ltgt.apt'
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
@@ -35,8 +34,10 @@ allprojects {
         aiVersion = '1.8.0'
         tarsosDSPVersion = '2.4'
         jfugueVersion = '5.0.9'
+        junitVersion = '5.2.0'
         androidVersion = '27.1.1'
         daggerVersion = '2.16'
+        commonsCollectionsVersion = '4.2'
     }
 
     repositories {
@@ -57,6 +58,7 @@ allprojects {
 
 project(":core") {
     apply plugin: "java"
+
     repositories {
         ivy {
             url "https://0110.be/"
@@ -69,12 +71,18 @@ project(":core") {
     dependencies {
         compileOnly "com.github.axet:TarsosDSP:$tarsosDSPVersion@jar"
         compileOnly "com.google.dagger:dagger:$daggerVersion"
+        compileOnly "com.github.JensPiegsa:jfugue:$jfugueVersion"
         annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
         implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        implementation "com.github.JensPiegsa:jfugue:$jfugueVersion"
+        implementation "org.apache.commons:commons-collections4:$commonsCollectionsVersion"
+
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+        testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+
 
     }
 }
@@ -88,11 +96,13 @@ project(":desktop") {
         annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
         implementation "com.github.axet:TarsosDSP:$tarsosDSPVersion@jar"
+        implementation "com.github.JensPiegsa:jfugue:$jfugueVersion"
         implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     }
 }
+
 
 project(":android") {
     apply plugin: "android"
@@ -116,33 +126,30 @@ project(":android") {
         implementation "com.android.support:support-core-utils:${androidVersion}"
         implementation "com.android.support:animated-vector-drawable:${androidVersion}"
         implementation "com.android.support:appcompat-v7:${androidVersion}"
-
         implementation "com.google.dagger:dagger-android:$daggerVersion"
-
-
         implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+        implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        implementation "TarsosDSP:TarsosDSP-Android:$tarsosDSPVersion@jar"
+
         annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
         annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
 
-        implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
-        implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
 
-        implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
-
-        implementation "TarsosDSP:TarsosDSP-Android:$tarsosDSPVersion@jar"
-
     }
 }
+
 
 project(":ios") {
     apply plugin: "java"
